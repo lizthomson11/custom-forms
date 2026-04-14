@@ -36,8 +36,9 @@ export function PhonePreview({ steps, ctaLabel, formTitle }: Props) {
           </p>
         </div>
 
-        {/* Scrollable form body */}
-        <div style={{ overflowY: 'auto', flex: 1, padding: '10px 12px' }}>
+        {/* Scrollable form body — zoom scales all content to phone size */}
+        <div style={{ overflowY: 'auto', flex: 1 }}>
+        <div style={{ zoom: 0.7, padding: '12px 14px' }}>
           {allFields.length === 0 && (
             <p style={{ fontSize: 12, color: '#9ca3af', textAlign: 'center', padding: '20px 0', lineHeight: 1.5 }}>
               Add fields to see a preview
@@ -54,6 +55,7 @@ export function PhonePreview({ steps, ctaLabel, formTitle }: Props) {
               {ctaLabel || 'Submit'}
             </button>
           )}
+        </div>
         </div>
       </div>
       <p className="text-center text-[11px] text-gray-400 mt-2.5 leading-snug">

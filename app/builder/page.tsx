@@ -10,22 +10,22 @@ import Link from 'next/link'
 import { ChevronLeft } from 'lucide-react'
 
 const defaultStep: FormStep = {
-  id: newId(),
+  id: 'step-1',
   stepNum: 1,
   sections: [
     {
-      id: newId(),
+      id: 'section-1',
       title: 'Default',
       fields: [
         {
-          id: newId(),
+          id: 'field-description',
           type: 'Open text',
           name: 'Description',
           helperText: 'Describe what you need in as much detail as possible',
           required: true,
         },
         {
-          id: newId(),
+          id: 'field-location',
           type: 'Open text',
           name: 'Location',
           helperText: 'Where does this request apply?',
@@ -33,7 +33,7 @@ const defaultStep: FormStep = {
           placeholder: '',
         },
         {
-          id: newId(),
+          id: 'field-attachment',
           type: 'File upload',
           name: 'Attachment',
           helperText: 'All file types accepted',
