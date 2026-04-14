@@ -2,103 +2,144 @@
 
 import { useState } from 'react'
 import Link from 'next/link'
-import { Input } from '@/components/ui/input'
-import { Label } from '@/components/ui/label'
+import { ChevronLeft } from 'lucide-react'
 
 export default function SubmitPage() {
   const [ackChecked, setAckChecked] = useState(false)
 
   return (
-    <div className="min-h-screen bg-gray-100">
+    <div className="min-h-screen" style={{ background: '#f4f5f7', fontFamily: "-apple-system, BlinkMacSystemFont, 'Inter', 'Segoe UI', sans-serif", fontSize: 14 }}>
+
       {/* Topbar */}
-      <header className="bg-white border-b border-gray-200 px-6 py-3 flex items-center gap-4">
-        <span className="font-semibold text-gray-900 text-sm">Physical Pass Card Request</span>
-        <nav className="flex items-center gap-1 ml-auto">
-          <Link
-            href="/builder"
-            className="px-3 py-1.5 text-xs font-medium rounded-md text-gray-500 hover:bg-gray-100 transition-colors"
-          >
-            Builder
-          </Link>
-          <Link
-            href="/"
-            className="px-3 py-1.5 text-xs font-medium rounded-md bg-blue-50 text-blue-600 border border-blue-200"
-          >
-            User view
-          </Link>
-        </nav>
+      <header className="bg-white border-b border-gray-200 flex items-center px-6 gap-3.5" style={{ height: 54 }}>
+        <Link href="/builder" className="flex items-center gap-1 text-[13px] text-gray-500 hover:text-gray-700 no-underline">
+          <ChevronLeft className="w-3.5 h-3.5" />
+          Back to form builder
+        </Link>
+        <span className="text-[17px] font-bold text-gray-900 flex-1">Physical Pass Card</span>
+        <div className="flex items-center bg-gray-100 rounded-lg p-[3px] gap-0.5">
+          <Link href="/builder" className="px-3.5 py-[5px] rounded-md text-[12px] font-medium text-gray-500 hover:text-gray-700 no-underline">Builder</Link>
+          <span className="px-3.5 py-[5px] rounded-md text-[12px] font-medium bg-white text-gray-900 shadow-sm">User view</span>
+        </div>
       </header>
 
-      <main className="max-w-xl mx-auto py-8 px-4 flex flex-col gap-4">
-        <div className="bg-white rounded-xl border border-gray-200 p-5 flex flex-col gap-4">
-          <h1 className="text-lg font-bold text-gray-900">Physical Pass Card Request</h1>
+      {/* Page body */}
+      <div className="mx-auto pb-16" style={{ maxWidth: 600, margin: '32px auto', padding: '0 24px 60px' }}>
 
-          <div className="flex flex-col gap-1">
-            <Label>Description <span className="text-red-500">*</span></Label>
+        {/* Request header */}
+        <div className="mb-6">
+          <div className="text-[11px] font-semibold text-gray-500 uppercase tracking-wide mb-1.5">Access Request</div>
+          <div className="text-[22px] font-bold text-gray-900 mb-1.5">Physical Pass Card</div>
+          <div className="text-[13px] text-gray-500 leading-relaxed">Submit your Physical Pass Card requests</div>
+        </div>
+
+        {/* Request Details card */}
+        <div className="bg-white border border-gray-200 rounded-xl p-6 mb-4">
+          <div className="text-[11px] font-bold text-gray-500 uppercase tracking-wide pb-2 mb-4 border-b border-gray-100">
+            Request Details
+          </div>
+
+          <div className="mb-5">
+            <label className="block text-[13px] font-semibold text-gray-900 mb-1">
+              Description <span className="text-red-500">*</span>
+            </label>
             <textarea
-              className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm resize-none focus:outline-none focus:ring-2 focus:ring-blue-500"
-              rows={3}
+              className="w-full px-[13px] py-[10px] border-[1.5px] border-gray-200 rounded-lg text-[13px] resize-y focus:outline-none focus:border-blue-300 transition-colors"
+              style={{ minHeight: 80, fontFamily: 'inherit' }}
               placeholder="Describe what you need in as much detail as possible"
+              rows={3}
             />
-            <p className="text-xs text-gray-400 mt-1">Describe what you need in as much detail as possible</p>
           </div>
 
-          <div className="flex flex-col gap-1">
-            <Label>Location</Label>
-            <Input placeholder="Where does this request apply?" />
-            <p className="text-xs text-gray-400 mt-1">Where does this request apply?</p>
+          <div className="mb-5">
+            <label className="block text-[13px] font-semibold text-gray-900 mb-1">Location</label>
+            <input
+              className="w-full px-[13px] py-[10px] border-[1.5px] border-gray-200 rounded-lg text-[13px] focus:outline-none focus:border-blue-300 transition-colors"
+              style={{ fontFamily: 'inherit' }}
+              placeholder="Where does this request apply?"
+            />
           </div>
 
-          <div className="flex flex-col gap-1">
-            <Label>Attachment</Label>
-            <div className="border-2 border-dashed border-gray-200 rounded-lg p-6 text-center cursor-pointer hover:border-blue-400 transition-colors">
-              <div className="text-2xl mb-1">📎</div>
-              <p className="text-sm text-gray-400">Tap to upload a file</p>
-              <p className="text-xs text-gray-300">or drag and drop</p>
+          <div>
+            <label className="block text-[13px] font-semibold text-gray-900 mb-1">Attachment</label>
+            <div
+              className="border-[1.5px] border-dashed border-gray-300 rounded-lg p-5 text-center cursor-pointer hover:border-blue-300 hover:bg-blue-50 transition-colors"
+            >
+              <div className="text-[22px] mb-1.5">📎</div>
+              <div className="text-[13px] text-gray-500">Tap to upload a file</div>
+              <div className="text-[11px] text-gray-400 mt-0.5">or drag and drop</div>
             </div>
-            <p className="text-xs text-gray-400 mt-1">All file types accepted</p>
+            <span className="text-[12px] text-gray-400 mt-1.5 block leading-snug">All file types accepted</span>
           </div>
         </div>
 
-        <div className="bg-white rounded-xl border border-gray-200 p-5 flex flex-col gap-4">
-          <h2 className="text-sm font-semibold text-gray-500 uppercase tracking-wide">Access Request Details</h2>
+        {/* Access Request Details card */}
+        <div className="bg-white border border-gray-200 rounded-xl p-6 mb-4">
+          <div className="text-[11px] font-bold text-gray-500 uppercase tracking-wide pb-2 mb-4 border-b border-gray-100">
+            Access Request Details
+          </div>
 
-          <div className="flex flex-col gap-1">
-            <Label>Access Areas <span className="text-red-500">*</span></Label>
-            <Input placeholder="Enter access areas" />
-            <p className="text-xs text-gray-400 mt-1">Provide any other areas you will need access.</p>
+          <div>
+            <label className="block text-[13px] font-semibold text-gray-900 mb-1">
+              Access Areas <span className="text-red-500">*</span>
+            </label>
+            <input
+              className="w-full px-[13px] py-[10px] border-[1.5px] border-gray-200 rounded-lg text-[13px] focus:outline-none focus:border-blue-300 transition-colors"
+              style={{ fontFamily: 'inherit' }}
+              placeholder="Enter access areas"
+            />
+            <span className="text-[12px] text-gray-400 mt-1.5 block leading-snug">Provide any other areas you will need access.</span>
           </div>
         </div>
 
-        <div className="bg-white rounded-xl border border-gray-200 p-5">
-          <label className="flex items-start gap-3 cursor-pointer">
+        {/* Acknowledgment card */}
+        <div className="bg-white border border-gray-200 rounded-xl p-6 mb-6">
+          <label
+            className="flex items-start gap-2.5 cursor-pointer p-3.5 rounded-lg"
+            style={{ background: '#f8faff', border: '1.5px solid #bfdbfe' }}
+          >
             <input
               type="checkbox"
-              className="accent-blue-600 w-4 h-4 mt-0.5 shrink-0"
+              className="w-4 h-4 mt-0.5 shrink-0 accent-blue-600 cursor-pointer"
               checked={ackChecked}
               onChange={e => setAckChecked(e.target.checked)}
             />
             <div>
-              <p className="text-sm font-medium text-gray-900">
+              <div className="text-[13px] text-gray-700 leading-relaxed">
                 I confirm the details of this request are accurate{' '}
                 <span className="text-red-500">*</span>
-              </p>
-              <p className="text-xs text-gray-400 mt-0.5">Please review your request details before submitting.</p>
+              </div>
+              <div className="text-[11px] text-gray-400 mt-0.5">Please review your request details before submitting.</div>
             </div>
           </label>
         </div>
 
-        <button
-          disabled={!ackChecked}
-          className={`w-full py-3 rounded-xl text-sm font-semibold transition-all ${
-            ackChecked
-              ? 'bg-blue-600 text-white hover:bg-blue-700 cursor-pointer'
-              : 'bg-blue-300 text-white cursor-not-allowed opacity-60'
-          }`}
-        >
-          Acknowledge and Request
-        </button>
-      </main>
+        {/* Submit */}
+        <div>
+          <button
+            disabled={!ackChecked}
+            style={{
+              width: '100%',
+              padding: 13,
+              background: ackChecked ? '#2563eb' : '#93c5fd',
+              color: '#fff',
+              border: 'none',
+              borderRadius: 8,
+              fontSize: 14,
+              fontWeight: 600,
+              cursor: ackChecked ? 'pointer' : 'not-allowed',
+              transition: 'background 0.15s',
+              fontFamily: 'inherit',
+            }}
+          >
+            Acknowledge and Request
+          </button>
+          <p className="text-center text-[11px] text-gray-400 mt-2.5 leading-snug">
+            Your request will be reviewed by the security admin team.
+          </p>
+        </div>
+
+      </div>
     </div>
   )
 }
