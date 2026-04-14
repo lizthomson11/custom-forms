@@ -4,7 +4,7 @@ import { useState } from 'react'
 import { FormField } from '@/types/form'
 import { Switch } from '@/components/ui/switch'
 import { Separator } from '@/components/ui/separator'
-import { GripVertical, Trash2, ChevronDown } from 'lucide-react'
+import { GripVertical, Trash2, ChevronDown, Lock } from 'lucide-react'
 import { FieldTypeBadge } from './FieldTypeBadge'
 import { AdvancedSettings } from './AdvancedSettings'
 import { OptionsEditor } from './OptionsEditor'
@@ -21,6 +21,7 @@ export function FieldRow({ field, onChange, onDelete }: Props) {
   const isChoice = field.type === 'Multiple choice' || field.type === 'Multi-select'
   const isSection = field.type === 'Section Header'
   const isCheckbox = field.type === 'Checkbox'
+  const isSystem = !!field.system
 
   if (isSection) {
     return (
@@ -55,12 +56,18 @@ export function FieldRow({ field, onChange, onDelete }: Props) {
           {field.name || field.type}
         </span>
         <FieldTypeBadge type={field.type} />
-        <button
-          onClick={e => { e.stopPropagation(); onDelete() }}
-          className="text-gray-300 hover:text-red-400 transition-colors shrink-0"
-        >
-          <Trash2 className="w-3.5 h-3.5" />
-        </button>
+        {isSystem ? (
+          <span className="flex items-center gap-1 text-[11px] font-medium text-gray-400 bg-gray-100 border border-gray-200 rounded px-1.5 py-0.5 shrink-0">
+            <Lock className="w-2.5 h-2.5" /> System field
+          </span>
+        ) : (
+          <button
+            onClick={e => { e.stopPropagation(); onDelete() }}
+            className="text-gray-300 hover:text-red-400 transition-colors shrink-0"
+          >
+            <Trash2 className="w-3.5 h-3.5" />
+          </button>
+        )}
         <ChevronDown className={`w-3.5 h-3.5 text-gray-400 shrink-0 transition-transform ${open ? 'rotate-180' : ''}`} />
       </div>
 

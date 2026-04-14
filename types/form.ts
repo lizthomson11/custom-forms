@@ -15,6 +15,7 @@ export interface FormField {
   name: string
   helperText: string
   required: boolean
+  system?: boolean  // system fields cannot be deleted
   // Open text / Number / Phone / Date
   placeholder?: string
   // Number

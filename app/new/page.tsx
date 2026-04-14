@@ -18,6 +18,14 @@ const defaultStep: FormStep = {
       title: 'Default',
       fields: [
         {
+          id: 'new-field-description',
+          type: 'Open text',
+          name: 'Description',
+          helperText: 'Describe what you need in as much detail as possible',
+          required: true,
+          system: true,
+        },
+        {
           id: 'new-field-location',
           type: 'Open text',
           name: 'Location',
