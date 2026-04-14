@@ -9,17 +9,41 @@ import { PhonePreview } from '@/components/preview/PhonePreview'
 import Link from 'next/link'
 import { ChevronLeft } from 'lucide-react'
 
-const emptyStep: FormStep = {
+const defaultStep: FormStep = {
   id: newId(),
   stepNum: 1,
-  sections: [{ id: newId(), title: 'Default', fields: [] }],
+  sections: [
+    {
+      id: newId(),
+      title: 'Default',
+      fields: [
+        {
+          id: newId(),
+          type: 'Open text',
+          name: 'Location',
+          helperText: 'Where does this request apply?',
+          required: false,
+          placeholder: '',
+        },
+        {
+          id: newId(),
+          type: 'File upload',
+          name: 'Attachment',
+          helperText: 'All file types accepted',
+          required: false,
+          uploadZoneText: 'Tap to upload',
+          acceptedFileTypes: ['Images (JPG, PNG, GIF, WebP)', 'PDF', 'Word documents (.doc, .docx)', 'Spreadsheets (.xls, .xlsx)', 'Videos (.mp4, .mov)'],
+        },
+      ],
+    },
+  ],
 }
 
 export default function NewPage() {
   const [formTitle, setFormTitle] = useState('')
   const [formDescription, setFormDescription] = useState('')
   const [ctaLabel, setCtaLabel] = useState('Submit')
-  const [steps, setSteps] = useState<FormStep[]>([emptyStep])
+  const [steps, setSteps] = useState<FormStep[]>([defaultStep])
 
   function updateField(stepId: string, sectionId: string, fieldId: string, updates: Partial<FormField>) {
     setSteps(prev => prev.map(step =>
