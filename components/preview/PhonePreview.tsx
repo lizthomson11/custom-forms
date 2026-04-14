@@ -10,33 +10,55 @@ export function PhonePreview({ steps, ctaLabel, formTitle }: Props) {
   const allFields = steps.flatMap(s => s.sections.flatMap(sec => sec.fields))
 
   return (
-    <div className="w-[260px] rounded-[32px] border-[6px] border-gray-800 bg-white shadow-xl overflow-hidden shrink-0">
-      {/* Status bar */}
-      <div className="bg-gray-800 flex justify-between items-center px-4 py-1">
-        <span className="text-white text-[10px]">9:41</span>
-        <span className="text-white text-[10px]">●●●</span>
-      </div>
+    <div>
+      <div
+        className="mx-auto bg-white overflow-hidden"
+        style={{
+          width: 258,
+          height: 518,
+          border: '2.5px solid #1a1d23',
+          borderRadius: 34,
+          boxShadow: '0 6px 28px rgba(0,0,0,0.12)',
+          display: 'flex',
+          flexDirection: 'column',
+        }}
+      >
+        {/* Status bar */}
+        <div style={{ background: '#1a1d23', padding: '6px 16px', display: 'flex', justifyContent: 'space-between', flexShrink: 0 }}>
+          <span style={{ color: '#fff', fontSize: 9 }}>9:41</span>
+          <span style={{ color: '#fff', fontSize: 9 }}>●●●</span>
+        </div>
 
-      {/* App chrome */}
-      <div className="bg-blue-600 px-3 py-2">
-        <p className="text-white font-semibold text-[11px] truncate">{formTitle || 'Form preview'}</p>
-      </div>
+        {/* App chrome */}
+        <div style={{ background: '#2563eb', padding: '6px 12px', flexShrink: 0 }}>
+          <p style={{ color: '#fff', fontWeight: 600, fontSize: 11, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+            {formTitle || 'Form preview'}
+          </p>
+        </div>
 
-      {/* Scrollable form */}
-      <div className="overflow-y-auto max-h-[520px] px-3 py-3 space-y-1">
-        {allFields.length === 0 && (
-          <p className="text-[11px] text-gray-400 text-center py-8">Add fields to see a preview</p>
-        )}
-        {allFields.map(field => (
-          <PreviewField key={field.id} field={field} />
-        ))}
-
-        {allFields.length > 0 && (
-          <button className="w-full mt-3 bg-blue-600 text-white text-[11px] font-semibold py-2 rounded-lg">
-            {ctaLabel || 'Submit'}
-          </button>
-        )}
+        {/* Scrollable form body */}
+        <div style={{ overflowY: 'auto', flex: 1, padding: '10px 12px' }}>
+          {allFields.length === 0 && (
+            <p style={{ fontSize: 12, color: '#9ca3af', textAlign: 'center', padding: '20px 0', lineHeight: 1.5 }}>
+              Add fields to see a preview
+            </p>
+          )}
+          {allFields.map(field => (
+            <PreviewField key={field.id} field={field} />
+          ))}
+          {allFields.length > 0 && (
+            <button style={{
+              width: '100%', marginTop: 8, background: '#2563eb', color: '#fff',
+              fontSize: 11, fontWeight: 600, padding: '7px 0', borderRadius: 8, border: 'none', cursor: 'pointer'
+            }}>
+              {ctaLabel || 'Submit'}
+            </button>
+          )}
+        </div>
       </div>
+      <p className="text-center text-[11px] text-gray-400 mt-2.5 leading-snug">
+        Live preview — updates as you edit
+      </p>
     </div>
   )
 }
@@ -44,7 +66,7 @@ export function PhonePreview({ steps, ctaLabel, formTitle }: Props) {
 function PreviewField({ field }: { field: FormField }) {
   if (field.type === 'Section Header') {
     return (
-      <div className="text-[9px] font-bold text-gray-500 uppercase tracking-wide pt-3 pb-1 border-b border-gray-100">
+      <div style={{ fontSize: 9, fontWeight: 700, color: '#6b7280', textTransform: 'uppercase', letterSpacing: '0.5px', margin: '12px 0 5px', paddingBottom: 4, borderBottom: '1px solid #f3f4f6' }}>
         {field.name || 'Section'}
       </div>
     )
@@ -52,16 +74,14 @@ function PreviewField({ field }: { field: FormField }) {
 
   if (field.type === 'Checkbox') {
     return (
-      <div className="mb-3">
-        <label className="flex items-start gap-2 p-2 bg-blue-50 border border-blue-200 rounded cursor-pointer">
-          <input type="checkbox" className="accent-blue-600 w-3 h-3 shrink-0 mt-0.5" />
+      <div style={{ marginBottom: 12 }}>
+        <label style={{ display: 'flex', alignItems: 'flex-start', gap: 7, padding: '6px 8px', background: '#f8faff', border: '1px solid #bfdbfe', borderRadius: 4, cursor: 'pointer' }}>
+          <input type="checkbox" style={{ accentColor: '#2563eb', width: 12, height: 12, flexShrink: 0, marginTop: 1 }} readOnly />
           <div>
-            <div className="text-[10px] font-semibold text-gray-900">
-              {field.name}{field.required && <span className="text-red-500 ml-0.5">*</span>}
+            <div style={{ fontSize: 10, fontWeight: 600, color: '#111827' }}>
+              {field.name}{field.required && <span style={{ color: '#ef4444' }}> *</span>}
             </div>
-            {field.helperText && (
-              <div className="text-[9px] text-gray-400 mt-0.5">{field.helperText}</div>
-            )}
+            {field.helperText && <div style={{ fontSize: 9, color: '#9ca3af', marginTop: 2 }}>{field.helperText}</div>}
           </div>
         </label>
       </div>
@@ -69,60 +89,51 @@ function PreviewField({ field }: { field: FormField }) {
   }
 
   if (field.type === 'Multiple choice' || field.type === 'Multi-select') {
-    const shape = field.type === 'Multiple choice' ? 'rounded-full' : 'rounded-sm'
+    const isRound = field.type === 'Multiple choice'
     return (
-      <div className="mb-3">
-        <div className="text-[10px] font-semibold text-gray-900 mb-1">
-          {field.name}{field.required && <span className="text-red-500 ml-0.5">*</span>}
+      <div style={{ marginBottom: 12 }}>
+        <div style={{ fontSize: 10, fontWeight: 600, color: '#111827', marginBottom: 4 }}>
+          {field.name}{field.required && <span style={{ color: '#ef4444' }}> *</span>}
         </div>
-        <div className="space-y-0.5">
-          {(field.options ?? []).slice(0, 4).map((opt, i) => (
-            <label key={i} className="flex items-center gap-1.5 text-[10px] text-gray-700 py-0.5">
-              <span className={`w-2.5 h-2.5 border-[1.5px] border-gray-300 inline-block bg-white shrink-0 ${shape}`} />
-              {opt}
-            </label>
-          ))}
-        </div>
-        {field.helperText && (
-          <div className="text-[9px] text-gray-400 mt-1">{field.helperText}</div>
-        )}
+        {(field.options ?? []).slice(0, 4).map((opt, i) => (
+          <label key={i} style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 10, color: '#374151', padding: '2px 0' }}>
+            <span style={{ width: 11, height: 11, borderRadius: isRound ? '50%' : 2, border: '1.5px solid #d1d5db', display: 'inline-block', background: '#fff', flexShrink: 0 }} />
+            {opt}
+          </label>
+        ))}
+        {field.helperText && <div style={{ fontSize: 9, color: '#9ca3af', marginTop: 3 }}>{field.helperText}</div>}
       </div>
     )
   }
 
   if (field.type === 'File upload') {
     return (
-      <div className="mb-3">
-        <div className="text-[10px] font-semibold text-gray-900 mb-1">
-          {field.name}{field.required && <span className="text-red-500 ml-0.5">*</span>}
+      <div style={{ marginBottom: 12 }}>
+        <div style={{ fontSize: 10, fontWeight: 600, color: '#111827', marginBottom: 4 }}>
+          {field.name}{field.required && <span style={{ color: '#ef4444' }}> *</span>}
         </div>
-        <div className="border-[1.5px] border-dashed border-gray-300 rounded text-center py-2 text-[9px] text-gray-400">
+        <div style={{ border: '1.5px dashed #d1d5db', borderRadius: 4, padding: 7, textAlign: 'center', fontSize: 9, color: '#9ca3af' }}>
           {field.uploadZoneText || 'Tap to upload'}
         </div>
-        {field.helperText && (
-          <div className="text-[9px] text-gray-400 mt-1">{field.helperText}</div>
-        )}
+        {field.helperText && <div style={{ fontSize: 9, color: '#9ca3af', marginTop: 3 }}>{field.helperText}</div>}
       </div>
     )
   }
 
-  // Default: text-like inputs
   const placeholder = field.placeholder
     ?? (field.type === 'Date' ? 'MM/DD/YYYY'
       : field.type === 'Phone' ? '+1 (555) 000-0000'
       : `Enter ${(field.name || 'response').toLowerCase()}`)
 
   return (
-    <div className="mb-3">
-      <div className="text-[10px] font-semibold text-gray-900 mb-1">
-        {field.name}{field.required && <span className="text-red-500 ml-0.5">*</span>}
+    <div style={{ marginBottom: 12 }}>
+      <div style={{ fontSize: 10, fontWeight: 600, color: '#111827', marginBottom: 4 }}>
+        {field.name}{field.required && <span style={{ color: '#ef4444' }}> *</span>}
       </div>
-      <div className="border border-gray-200 rounded px-2 py-1.5 text-[10px] text-gray-400">
+      <div style={{ border: '1px solid #e5e7eb', borderRadius: 4, padding: '5px 7px', fontSize: 10, color: '#9ca3af' }}>
         {placeholder}
       </div>
-      {field.helperText && (
-        <div className="text-[9px] text-gray-400 mt-1">{field.helperText}</div>
-      )}
+      {field.helperText && <div style={{ fontSize: 9, color: '#9ca3af', marginTop: 3 }}>{field.helperText}</div>}
     </div>
   )
 }

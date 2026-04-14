@@ -28,7 +28,7 @@ interface Props {
 export function AddFieldMenu({ onAdd }: Props) {
   return (
     <DropdownMenu>
-      <DropdownMenuTrigger className="w-full flex items-center justify-center gap-1.5 rounded-md border border-dashed border-gray-300 px-3 py-1.5 text-sm text-gray-500 hover:text-gray-700 hover:bg-gray-50 transition-colors">
+      <DropdownMenuTrigger className="flex items-center gap-1.5 px-3 py-[7px] border border-gray-200 rounded-md bg-white text-[13px] font-medium text-gray-700 hover:bg-gray-50 transition-colors cursor-pointer">
         <Plus className="w-4 h-4" />
         Add field
       </DropdownMenuTrigger>
