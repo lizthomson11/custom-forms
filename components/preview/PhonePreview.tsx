@@ -16,47 +16,53 @@ export function PhonePreview({ steps, ctaLabel, formTitle }: Props) {
         style={{
           width: 258,
           height: 518,
-          border: '2.5px solid #1a1d23',
-          borderRadius: 34,
-          boxShadow: '0 6px 28px rgba(0,0,0,0.12)',
+          border: '3px solid #1a1d23',
+          borderRadius: 40,
+          boxShadow: '0 8px 32px rgba(0,0,0,0.18)',
           display: 'flex',
           flexDirection: 'column',
         }}
       >
-        {/* Status bar */}
-        <div style={{ background: '#1a1d23', padding: '6px 16px', display: 'flex', justifyContent: 'space-between', flexShrink: 0 }}>
-          <span style={{ color: '#fff', fontSize: 9 }}>9:41</span>
-          <span style={{ color: '#fff', fontSize: 9 }}>●●●</span>
-        </div>
-
-        {/* App chrome */}
-        <div style={{ background: '#2563eb', padding: '6px 12px', flexShrink: 0 }}>
-          <p style={{ color: '#fff', fontWeight: 600, fontSize: 11, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
-            {formTitle || 'Form preview'}
-          </p>
-        </div>
-
-        {/* Scrollable form body — zoom scales all content to phone size */}
+        {/* Scrollable form body */}
         <div style={{ overflowY: 'auto', flex: 1 }}>
-        <div style={{ zoom: 0.7, padding: '12px 14px' }}>
-          {allFields.length === 0 && (
-            <p style={{ fontSize: 12, color: '#9ca3af', textAlign: 'center', padding: '20px 0', lineHeight: 1.5 }}>
-              Add fields to see a preview
-            </p>
-          )}
-          {allFields.map(field => (
-            <PreviewField key={field.id} field={field} />
-          ))}
-          {allFields.length > 0 && (
+          <div style={{ zoom: 0.7, padding: '20px 16px 12px' }}>
+
+            {/* Form title */}
+            <div style={{ fontSize: 18, fontWeight: 700, color: '#111827', marginBottom: 10 }}>
+              {formTitle || 'New request'}
+            </div>
+            <div style={{ borderBottom: '1px solid #e5e7eb', marginBottom: 14 }} />
+
+            {allFields.length === 0 && (
+              <p style={{ fontSize: 12, color: '#9ca3af', textAlign: 'center', padding: '20px 0', lineHeight: 1.5 }}>
+                Add fields to see a preview
+              </p>
+            )}
+            {allFields.map(field => (
+              <PreviewField key={field.id} field={field} />
+            ))}
+          </div>
+        </div>
+
+        {/* Fixed submit button */}
+        {allFields.length > 0 && (
+          <div style={{ padding: '10px 14px 14px', flexShrink: 0, zoom: 0.7 }}>
             <button style={{
-              width: '100%', marginTop: 8, background: '#2563eb', color: '#fff',
-              fontSize: 11, fontWeight: 600, padding: '7px 0', borderRadius: 8, border: 'none', cursor: 'pointer'
+              width: '100%',
+              background: '#3b5bdb',
+              color: '#fff',
+              fontSize: 15,
+              fontWeight: 700,
+              padding: '13px 0',
+              borderRadius: 12,
+              border: 'none',
+              cursor: 'pointer',
+              letterSpacing: '0.01em',
             }}>
               {ctaLabel || 'Submit'}
             </button>
-          )}
-        </div>
-        </div>
+          </div>
+        )}
       </div>
       <p className="text-center text-[11px] text-gray-400 mt-2.5 leading-snug">
         Live preview — updates as you edit
@@ -78,7 +84,7 @@ function PreviewField({ field }: { field: FormField }) {
     return (
       <div style={{ marginBottom: 12 }}>
         <label style={{ display: 'flex', alignItems: 'flex-start', gap: 7, padding: '6px 8px', background: '#f8faff', border: '1px solid #bfdbfe', borderRadius: 4, cursor: 'pointer' }}>
-          <input type="checkbox" style={{ accentColor: '#2563eb', width: 12, height: 12, flexShrink: 0, marginTop: 1 }} readOnly />
+          <input type="checkbox" style={{ accentColor: '#3b5bdb', width: 12, height: 12, flexShrink: 0, marginTop: 1 }} readOnly />
           <div>
             <div style={{ fontSize: 10, fontWeight: 600, color: '#111827' }}>
               {field.name}{field.required && <span style={{ color: '#ef4444' }}> *</span>}
@@ -114,7 +120,7 @@ function PreviewField({ field }: { field: FormField }) {
         <div style={{ fontSize: 10, fontWeight: 600, color: '#111827', marginBottom: 4 }}>
           {field.name}{field.required && <span style={{ color: '#ef4444' }}> *</span>}
         </div>
-        <div style={{ border: '1.5px dashed #d1d5db', borderRadius: 4, padding: 7, textAlign: 'center', fontSize: 9, color: '#9ca3af' }}>
+        <div style={{ border: '1.5px dashed #d1d5db', borderRadius: 6, padding: '10px 7px', textAlign: 'center', fontSize: 10, color: '#9ca3af' }}>
           {field.uploadZoneText || 'Tap to upload'}
         </div>
         {field.helperText && <div style={{ fontSize: 9, color: '#9ca3af', marginTop: 3 }}>{field.helperText}</div>}
@@ -132,7 +138,7 @@ function PreviewField({ field }: { field: FormField }) {
       <div style={{ fontSize: 10, fontWeight: 600, color: '#111827', marginBottom: 4 }}>
         {field.name}{field.required && <span style={{ color: '#ef4444' }}> *</span>}
       </div>
-      <div style={{ border: '1px solid #e5e7eb', borderRadius: 4, padding: '5px 7px', fontSize: 10, color: '#9ca3af' }}>
+      <div style={{ border: '1px solid #e5e7eb', borderRadius: 6, padding: '6px 8px', fontSize: 10, color: '#9ca3af' }}>
         {placeholder}
       </div>
       {field.helperText && <div style={{ fontSize: 9, color: '#9ca3af', marginTop: 3 }}>{field.helperText}</div>}
