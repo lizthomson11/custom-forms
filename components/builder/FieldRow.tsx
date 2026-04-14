@@ -48,8 +48,8 @@ export function FieldRow({ field, onChange, onDelete }: Props) {
     <div className="border-b border-gray-100 last:border-b-0">
       {/* Row top */}
       <div
-        className="flex items-center gap-2.5 px-5 py-[11px] cursor-pointer hover:bg-gray-50 transition-colors"
-        onClick={() => setOpen(o => !o)}
+        className={`flex items-center gap-2.5 px-5 py-[11px] transition-colors ${isSystem ? '' : 'cursor-pointer hover:bg-gray-50'}`}
+        onClick={isSystem ? undefined : () => setOpen(o => !o)}
       >
         <GripVertical className="w-3.5 h-3.5 text-gray-300 shrink-0 cursor-grab" />
         <span className={`flex-1 text-[13px] truncate ${field.name && field.name !== field.type ? 'text-gray-700' : 'text-gray-400 italic'}`}>
@@ -68,18 +68,21 @@ export function FieldRow({ field, onChange, onDelete }: Props) {
             <Trash2 className="w-3.5 h-3.5" />
           </button>
         )}
-        <ChevronDown className={`w-3.5 h-3.5 text-gray-400 shrink-0 transition-transform ${open ? 'rotate-180' : ''}`} />
+        {!isSystem && (
+          <ChevronDown className={`w-3.5 h-3.5 text-gray-400 shrink-0 transition-transform ${open ? 'rotate-180' : ''}`} />
+        )}
       </div>
 
       {/* Editor — slides open inline */}
-      {open && (
+      {open && !isSystem && (
         <div className="flex flex-col gap-3.5 px-5 pb-5 pt-4 pl-11 bg-[#fafafa] border-t border-gray-100">
 
           {/* Field name */}
           <div className="flex flex-col gap-1">
             <label className="text-[13px] font-medium text-gray-700">Field name</label>
             <input
-              className="w-full px-[11px] py-2 border border-gray-200 rounded-md text-[13px] font-['inherit'] text-gray-900 bg-white focus:outline-none focus:border-blue-300"
+              className="w-full px-[11px] py-2 border border-gray-200 rounded-md text-[13px] text-gray-900 bg-white focus:outline-none focus:border-blue-300"
+              style={{ fontFamily: 'inherit' }}
               value={field.name}
               placeholder={`e.g. ${field.type}`}
               onChange={e => onChange({ name: e.target.value })}
@@ -95,7 +98,8 @@ export function FieldRow({ field, onChange, onDelete }: Props) {
               {isCheckbox ? 'Shown below the checkbox for extra context' : 'Shown below the field to give users more context'}
             </span>
             <input
-              className="w-full px-[11px] py-2 border border-gray-200 rounded-md text-[13px] font-['inherit'] text-gray-900 bg-white focus:outline-none focus:border-blue-300"
+              className="w-full px-[11px] py-2 border border-gray-200 rounded-md text-[13px] text-gray-900 bg-white focus:outline-none focus:border-blue-300"
+              style={{ fontFamily: 'inherit' }}
               value={field.helperText}
               placeholder="Add helper text…"
               onChange={e => onChange({ helperText: e.target.value })}
