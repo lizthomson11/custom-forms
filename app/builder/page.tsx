@@ -217,10 +217,6 @@ export default function BuilderPage() {
                       onDelete={() => deleteField(step.id, sec.id, field.id)}
                     />
                   ))}
-                  {/* Bottom add field */}
-                  <div className="px-5 py-3 border-t border-gray-100">
-                    <AddFieldMenu onAdd={type => addField(step.id, sec.id, type)} />
-                  </div>
                 </div>
               ))
             )}
