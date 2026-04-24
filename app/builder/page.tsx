@@ -2,12 +2,12 @@
 
 import { useState } from 'react'
 import { FormField, FormStep, FieldType } from '@/types/form'
-import { createField, newId } from '@/lib/field-utils'
+import { createField } from '@/lib/field-utils'
 import { FieldRow } from '@/components/builder/FieldRow'
 import { AddFieldMenu } from '@/components/builder/AddFieldMenu'
 import { PhonePreview } from '@/components/preview/PhonePreview'
 import Link from 'next/link'
-import { ChevronLeft } from 'lucide-react'
+import { ChevronLeft, X } from 'lucide-react'
 
 const defaultStep: FormStep = {
   id: 'step-1',
@@ -74,6 +74,10 @@ export default function BuilderPage() {
   const [formDescription, setFormDescription] = useState('Submit your Physical Pass Card requests')
   const [ctaLabel, setCtaLabel] = useState('Acknowledge and Request')
   const [steps, setSteps] = useState<FormStep[]>([defaultStep])
+  const [activeStepId, setActiveStepId] = useState('step-1')
+  const [dragOverStepId, setDragOverStepId] = useState<string | null>(null)
+
+  const activeStep = steps.find(s => s.id === activeStepId) ?? steps[0]
 
   function updateField(stepId: string, sectionId: string, fieldId: string, updates: Partial<FormField>) {
     setSteps(prev => prev.map(step =>
@@ -116,6 +120,67 @@ export default function BuilderPage() {
         ),
       }
     ))
+  }
+
+  function addStep() {
+    const id = `step-${Date.now()}`
+    const newStep: FormStep = {
+      id,
+      stepNum: steps.length + 1,
+      sections: [{ id: `section-${Date.now()}`, title: 'Default', fields: [] }],
+    }
+    setSteps(prev => [...prev, newStep])
+    setActiveStepId(id)
+  }
+
+  function deleteStep(stepId: string) {
+    if (steps.length <= 1) return
+    const idx = steps.findIndex(s => s.id === stepId)
+    const remaining = steps.filter(s => s.id !== stepId).map((s, i) => ({ ...s, stepNum: i + 1 }))
+    setSteps(remaining)
+    if (activeStepId === stepId) {
+      setActiveStepId(remaining[Math.max(0, idx - 1)]?.id ?? remaining[0].id)
+    }
+  }
+
+  function moveFieldToStep(fieldId: string, fromStepId: string, fromSectionId: string, toStepId: string) {
+    setSteps(prev => {
+      let moved: FormField | undefined
+      const without = prev.map(step => {
+        if (step.id !== fromStepId) return step
+        return {
+          ...step,
+          sections: step.sections.map(sec => {
+            if (sec.id !== fromSectionId) return sec
+            moved = sec.fields.find(f => f.id === fieldId)
+            return { ...sec, fields: sec.fields.filter(f => f.id !== fieldId) }
+          }),
+        }
+      })
+      if (!moved) return prev
+      const field = moved
+      return without.map(step => {
+        if (step.id !== toStepId) return step
+        return {
+          ...step,
+          sections: [
+            { ...step.sections[0], fields: [...step.sections[0].fields, field] },
+            ...step.sections.slice(1),
+          ],
+        }
+      })
+    })
+  }
+
+  function handleDropOnStep(e: React.DragEvent, toStepId: string) {
+    e.preventDefault()
+    setDragOverStepId(null)
+    try {
+      const { fieldId, stepId: fromStepId, sectionId } = JSON.parse(e.dataTransfer.getData('application/json'))
+      if (fromStepId === toStepId) return
+      moveFieldToStep(fieldId, fromStepId, sectionId, toStepId)
+      setActiveStepId(toStepId)
+    } catch { /* invalid drag payload */ }
   }
 
   return (
@@ -191,35 +256,72 @@ export default function BuilderPage() {
                 <div className="text-[14px] font-semibold text-gray-900">Fields</div>
                 <div className="text-[12px] text-gray-500 mt-0.5">Add, remove, and reorder fields for this template.</div>
               </div>
-              <div className="flex items-center gap-2">
-                {steps.map(step =>
-                  step.sections.map(sec => (
-                    <AddFieldMenu key={sec.id} onAdd={type => addField(step.id, sec.id, type)} />
-                  ))
-                )}
-              </div>
+              <AddFieldMenu onAdd={type => addField(activeStep.id, activeStep.sections[0].id, type)} />
             </div>
 
-            {/* Field rows */}
-            {steps.map(step =>
-              step.sections.map(sec => (
+            {/* Step tabs */}
+            <div className="flex items-center gap-1 px-5 py-2.5 border-b border-gray-100 bg-gray-50/50">
+              {steps.map((step, idx) => (
+                <div key={step.id} className="flex items-center">
+                  <button
+                    className={`px-3 py-1.5 rounded-md text-[12px] font-medium transition-colors ${
+                      activeStepId === step.id
+                        ? 'bg-blue-50 text-blue-700 border border-blue-200'
+                        : 'text-gray-500 hover:text-gray-700 border border-transparent hover:bg-gray-100'
+                    } ${dragOverStepId === step.id ? 'ring-2 ring-blue-400 ring-offset-1' : ''}`}
+                    onClick={() => setActiveStepId(step.id)}
+                    onDragOver={e => { e.preventDefault(); setDragOverStepId(step.id) }}
+                    onDragLeave={() => setDragOverStepId(null)}
+                    onDrop={e => handleDropOnStep(e, step.id)}
+                  >
+                    Step {idx + 1}
+                  </button>
+                  {steps.length > 1 && (
+                    <button
+                      className="ml-0.5 w-4 h-4 flex items-center justify-center text-gray-300 hover:text-red-400 transition-colors rounded"
+                      onClick={() => deleteStep(step.id)}
+                    >
+                      <X className="w-2.5 h-2.5" />
+                    </button>
+                  )}
+                </div>
+              ))}
+              <button
+                className="ml-1 px-2.5 py-1.5 rounded-md text-[12px] text-gray-400 hover:text-gray-600 border border-dashed border-gray-300 hover:border-gray-400 hover:bg-gray-50 transition-colors"
+                onClick={addStep}
+              >
+                + Add step
+              </button>
+              {steps.length > 1 && (
+                <span className="ml-auto text-[11px] text-gray-400">Drag a field onto a step tab to move it</span>
+              )}
+            </div>
+
+            {/* Field rows — active step only */}
+            <div>
+              {activeStep.sections.map(sec => (
                 <div key={sec.id}>
                   {sec.fields.length === 0 && (
                     <div className="px-5 py-7 text-center text-[13px] text-gray-400">
-                      No fields yet — use "Add field" to get started.
+                      No fields yet — use &quot;Add field&quot; to get started.
                     </div>
                   )}
                   {sec.fields.map(field => (
                     <FieldRow
                       key={field.id}
                       field={field}
-                      onChange={updates => updateField(step.id, sec.id, field.id, updates)}
-                      onDelete={() => deleteField(step.id, sec.id, field.id)}
+                      onChange={updates => updateField(activeStep.id, sec.id, field.id, updates)}
+                      onDelete={() => deleteField(activeStep.id, sec.id, field.id)}
+                      draggable={steps.length > 1}
+                      onDragStart={e => {
+                        e.dataTransfer.setData('application/json', JSON.stringify({ fieldId: field.id, stepId: activeStep.id, sectionId: sec.id }))
+                        e.dataTransfer.effectAllowed = 'move'
+                      }}
                     />
                   ))}
                 </div>
-              ))
-            )}
+              ))}
+            </div>
           </div>
         </div>
 

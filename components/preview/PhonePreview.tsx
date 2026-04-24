@@ -1,3 +1,6 @@
+'use client'
+
+import { useState, useEffect } from 'react'
 import { FormField, FormStep } from '@/types/form'
 
 interface Props {
@@ -7,7 +10,18 @@ interface Props {
 }
 
 export function PhonePreview({ steps, ctaLabel, formTitle }: Props) {
-  const allFields = steps.flatMap(s => s.sections.flatMap(sec => sec.fields))
+  const [stepIdx, setStepIdx] = useState(0)
+
+  // Clamp preview step when steps are added/removed
+  useEffect(() => {
+    setStepIdx(i => Math.min(i, steps.length - 1))
+  }, [steps.length])
+
+  const currentIdx = Math.min(stepIdx, steps.length - 1)
+  const currentStep = steps[currentIdx]
+  const isLastStep = currentIdx === steps.length - 1
+  const hasMultipleSteps = steps.length > 1
+  const allFields = currentStep?.sections.flatMap(s => s.fields) ?? []
 
   return (
     <div>
@@ -28,10 +42,34 @@ export function PhonePreview({ steps, ctaLabel, formTitle }: Props) {
           <div style={{ zoom: 0.7, padding: '20px 16px 12px' }}>
 
             {/* Form title */}
-            <div style={{ fontSize: 18, fontWeight: 700, color: '#111827', marginBottom: 10 }}>
+            <div style={{ fontSize: 18, fontWeight: 700, color: '#111827', marginBottom: hasMultipleSteps ? 8 : 10 }}>
               {formTitle || 'New request'}
             </div>
-            <div style={{ borderBottom: '1px solid #e5e7eb', marginBottom: 14 }} />
+
+            {/* Progress bar — only when multi-step */}
+            {hasMultipleSteps ? (
+              <div style={{ marginBottom: 14 }}>
+                <div style={{ display: 'flex', gap: 4, marginBottom: 5 }}>
+                  {steps.map((_, i) => (
+                    <div
+                      key={i}
+                      style={{
+                        flex: 1,
+                        height: 4,
+                        borderRadius: 2,
+                        background: i <= currentIdx ? '#3b5bdb' : '#e5e7eb',
+                        transition: 'background 0.2s',
+                      }}
+                    />
+                  ))}
+                </div>
+                <div style={{ fontSize: 9, color: '#9ca3af' }}>
+                  Step {currentIdx + 1} of {steps.length}
+                </div>
+              </div>
+            ) : (
+              <div style={{ borderBottom: '1px solid #e5e7eb', marginBottom: 14 }} />
+            )}
 
             {allFields.length === 0 && (
               <p style={{ fontSize: 12, color: '#9ca3af', textAlign: 'center', padding: '20px 0', lineHeight: 1.5 }}>
@@ -44,23 +82,46 @@ export function PhonePreview({ steps, ctaLabel, formTitle }: Props) {
           </div>
         </div>
 
-        {/* Fixed submit button */}
+        {/* Fixed button area */}
         {allFields.length > 0 && (
-          <div style={{ padding: '10px 14px 14px', flexShrink: 0, zoom: 0.7 }}>
-            <button style={{
-              width: '100%',
-              background: '#3b5bdb',
-              color: '#fff',
-              fontSize: 15,
-              fontWeight: 700,
-              padding: '13px 0',
-              borderRadius: 12,
-              border: 'none',
-              cursor: 'pointer',
-              letterSpacing: '0.01em',
-            }}>
-              {ctaLabel || 'Submit'}
+          <div style={{ padding: '10px 14px 14px', flexShrink: 0, zoom: 0.7, display: 'flex', flexDirection: 'column', gap: 6 }}>
+            <button
+              onClick={() => {
+                if (!isLastStep) setStepIdx(i => i + 1)
+              }}
+              style={{
+                width: '100%',
+                background: '#3b5bdb',
+                color: '#fff',
+                fontSize: 15,
+                fontWeight: 700,
+                padding: '13px 0',
+                borderRadius: 12,
+                border: 'none',
+                cursor: 'pointer',
+                letterSpacing: '0.01em',
+              }}
+            >
+              {isLastStep ? (ctaLabel || 'Submit') : 'Next →'}
             </button>
+            {hasMultipleSteps && currentIdx > 0 && (
+              <button
+                onClick={() => setStepIdx(i => i - 1)}
+                style={{
+                  width: '100%',
+                  background: 'transparent',
+                  color: '#6b7280',
+                  fontSize: 13,
+                  fontWeight: 500,
+                  padding: '7px 0',
+                  borderRadius: 12,
+                  border: '1px solid #e5e7eb',
+                  cursor: 'pointer',
+                }}
+              >
+                ← Back
+              </button>
+            )}
           </div>
         )}
       </div>

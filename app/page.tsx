@@ -4,7 +4,10 @@ import { useState } from 'react'
 import Link from 'next/link'
 import { ChevronLeft } from 'lucide-react'
 
+const TOTAL_STEPS = 2
+
 export default function SubmitPage() {
+  const [step, setStep] = useState(0)
   const [ackChecked, setAckChecked] = useState(false)
 
   return (
@@ -24,7 +27,7 @@ export default function SubmitPage() {
       </header>
 
       {/* Page body */}
-      <div className="mx-auto pb-16" style={{ maxWidth: 600, margin: '32px auto', padding: '0 24px 60px' }}>
+      <div style={{ maxWidth: 600, margin: '32px auto', padding: '0 24px 60px' }}>
 
         {/* Request header */}
         <div className="mb-6">
@@ -33,111 +36,170 @@ export default function SubmitPage() {
           <div className="text-[13px] text-gray-500 leading-relaxed">Submit your Physical Pass Card requests</div>
         </div>
 
-        {/* Request Details card */}
-        <div className="bg-white border border-gray-200 rounded-xl p-6 mb-4">
-          <div className="text-[11px] font-bold text-gray-500 uppercase tracking-wide pb-2 mb-4 border-b border-gray-100">
-            Request Details
+        {/* Progress bar */}
+        <div className="mb-6">
+          <div className="flex gap-1.5 mb-2">
+            {Array.from({ length: TOTAL_STEPS }).map((_, i) => (
+              <div
+                key={i}
+                className="flex-1 rounded-full transition-all duration-300"
+                style={{ height: 5, background: i <= step ? '#2563eb' : '#e5e7eb' }}
+              />
+            ))}
           </div>
+          <div className="text-[12px] text-gray-400">Step {step + 1} of {TOTAL_STEPS}</div>
+        </div>
 
-          <div className="mb-5">
-            <label className="block text-[13px] font-semibold text-gray-900 mb-1">
-              Description <span className="text-red-500">*</span>
-            </label>
-            <textarea
-              className="w-full px-[13px] py-[10px] border-[1.5px] border-gray-200 rounded-lg text-[13px] resize-y focus:outline-none focus:border-blue-300 transition-colors"
-              style={{ minHeight: 80, fontFamily: 'inherit' }}
-              placeholder="Describe what you need in as much detail as possible"
-              rows={3}
-            />
-          </div>
-
-          <div className="mb-5">
-            <label className="block text-[13px] font-semibold text-gray-900 mb-1">Location</label>
-            <input
-              className="w-full px-[13px] py-[10px] border-[1.5px] border-gray-200 rounded-lg text-[13px] focus:outline-none focus:border-blue-300 transition-colors"
-              style={{ fontFamily: 'inherit' }}
-              placeholder="Where does this request apply?"
-            />
-          </div>
-
-          <div>
-            <label className="block text-[13px] font-semibold text-gray-900 mb-1">Attachment</label>
-            <div
-              className="border-[1.5px] border-dashed border-gray-300 rounded-lg p-5 text-center cursor-pointer hover:border-blue-300 hover:bg-blue-50 transition-colors"
-            >
-              <div className="text-[22px] mb-1.5">📎</div>
-              <div className="text-[13px] text-gray-500">Tap to upload a file</div>
-              <div className="text-[11px] text-gray-400 mt-0.5">or drag and drop</div>
+        {/* Step 1 — Request Details */}
+        {step === 0 && (
+          <div className="bg-white border border-gray-200 rounded-xl p-6 mb-4">
+            <div className="text-[11px] font-bold text-gray-500 uppercase tracking-wide pb-2 mb-4 border-b border-gray-100">
+              Request Details
             </div>
-            <span className="text-[12px] text-gray-400 mt-1.5 block leading-snug">All file types accepted</span>
-          </div>
-        </div>
 
-        {/* Access Request Details card */}
-        <div className="bg-white border border-gray-200 rounded-xl p-6 mb-4">
-          <div className="text-[11px] font-bold text-gray-500 uppercase tracking-wide pb-2 mb-4 border-b border-gray-100">
-            Access Request Details
-          </div>
+            <div className="mb-5">
+              <label className="block text-[13px] font-semibold text-gray-900 mb-1">
+                Description <span className="text-red-500">*</span>
+              </label>
+              <textarea
+                className="w-full px-[13px] py-[10px] border-[1.5px] border-gray-200 rounded-lg text-[13px] resize-y focus:outline-none focus:border-blue-300 transition-colors"
+                style={{ minHeight: 80, fontFamily: 'inherit' }}
+                placeholder="Describe what you need in as much detail as possible"
+                rows={3}
+              />
+            </div>
 
-          <div>
-            <label className="block text-[13px] font-semibold text-gray-900 mb-1">
-              Access Areas <span className="text-red-500">*</span>
-            </label>
-            <input
-              className="w-full px-[13px] py-[10px] border-[1.5px] border-gray-200 rounded-lg text-[13px] focus:outline-none focus:border-blue-300 transition-colors"
-              style={{ fontFamily: 'inherit' }}
-              placeholder="Enter access areas"
-            />
-            <span className="text-[12px] text-gray-400 mt-1.5 block leading-snug">Provide any other areas you will need access.</span>
-          </div>
-        </div>
+            <div className="mb-5">
+              <label className="block text-[13px] font-semibold text-gray-900 mb-1">Location</label>
+              <input
+                className="w-full px-[13px] py-[10px] border-[1.5px] border-gray-200 rounded-lg text-[13px] focus:outline-none focus:border-blue-300 transition-colors"
+                style={{ fontFamily: 'inherit' }}
+                placeholder="Where does this request apply?"
+              />
+            </div>
 
-        {/* Acknowledgment card */}
-        <div className="bg-white border border-gray-200 rounded-xl p-6 mb-6">
-          <label
-            className="flex items-start gap-2.5 cursor-pointer p-3.5 rounded-lg"
-            style={{ background: '#f8faff', border: '1.5px solid #bfdbfe' }}
-          >
-            <input
-              type="checkbox"
-              className="w-4 h-4 mt-0.5 shrink-0 accent-blue-600 cursor-pointer"
-              checked={ackChecked}
-              onChange={e => setAckChecked(e.target.checked)}
-            />
             <div>
-              <div className="text-[13px] text-gray-700 leading-relaxed">
-                I confirm the details of this request are accurate{' '}
-                <span className="text-red-500">*</span>
+              <label className="block text-[13px] font-semibold text-gray-900 mb-1">Attachment</label>
+              <div className="border-[1.5px] border-dashed border-gray-300 rounded-lg p-5 text-center cursor-pointer hover:border-blue-300 hover:bg-blue-50 transition-colors">
+                <div className="text-[22px] mb-1.5">📎</div>
+                <div className="text-[13px] text-gray-500">Tap to upload a file</div>
+                <div className="text-[11px] text-gray-400 mt-0.5">or drag and drop</div>
               </div>
-              <div className="text-[11px] text-gray-400 mt-0.5">Please review your request details before submitting.</div>
+              <span className="text-[12px] text-gray-400 mt-1.5 block leading-snug">All file types accepted</span>
             </div>
-          </label>
+          </div>
+        )}
+
+        {/* Step 2 — Access Request Details */}
+        {step === 1 && (
+          <>
+            <div className="bg-white border border-gray-200 rounded-xl p-6 mb-4">
+              <div className="text-[11px] font-bold text-gray-500 uppercase tracking-wide pb-2 mb-4 border-b border-gray-100">
+                Access Request Details
+              </div>
+              <div>
+                <label className="block text-[13px] font-semibold text-gray-900 mb-1">
+                  Access Areas <span className="text-red-500">*</span>
+                </label>
+                <input
+                  className="w-full px-[13px] py-[10px] border-[1.5px] border-gray-200 rounded-lg text-[13px] focus:outline-none focus:border-blue-300 transition-colors"
+                  style={{ fontFamily: 'inherit' }}
+                  placeholder="Enter access areas"
+                />
+                <span className="text-[12px] text-gray-400 mt-1.5 block leading-snug">Provide any other areas you will need access.</span>
+              </div>
+            </div>
+
+            <div className="bg-white border border-gray-200 rounded-xl p-6 mb-6">
+              <label
+                className="flex items-start gap-2.5 cursor-pointer p-3.5 rounded-lg"
+                style={{ background: '#f8faff', border: '1.5px solid #bfdbfe' }}
+              >
+                <input
+                  type="checkbox"
+                  className="w-4 h-4 mt-0.5 shrink-0 accent-blue-600 cursor-pointer"
+                  checked={ackChecked}
+                  onChange={e => setAckChecked(e.target.checked)}
+                />
+                <div>
+                  <div className="text-[13px] text-gray-700 leading-relaxed">
+                    I confirm the details of this request are accurate{' '}
+                    <span className="text-red-500">*</span>
+                  </div>
+                  <div className="text-[11px] text-gray-400 mt-0.5">Please review your request details before submitting.</div>
+                </div>
+              </label>
+            </div>
+          </>
+        )}
+
+        {/* Navigation */}
+        <div className="flex flex-col gap-2.5">
+          {step < TOTAL_STEPS - 1 ? (
+            <button
+              onClick={() => setStep(s => s + 1)}
+              style={{
+                width: '100%',
+                padding: 13,
+                background: '#2563eb',
+                color: '#fff',
+                border: 'none',
+                borderRadius: 8,
+                fontSize: 14,
+                fontWeight: 600,
+                cursor: 'pointer',
+                fontFamily: 'inherit',
+              }}
+            >
+              Next →
+            </button>
+          ) : (
+            <button
+              disabled={!ackChecked}
+              style={{
+                width: '100%',
+                padding: 13,
+                background: ackChecked ? '#2563eb' : '#93c5fd',
+                color: '#fff',
+                border: 'none',
+                borderRadius: 8,
+                fontSize: 14,
+                fontWeight: 600,
+                cursor: ackChecked ? 'pointer' : 'not-allowed',
+                transition: 'background 0.15s',
+                fontFamily: 'inherit',
+              }}
+            >
+              Acknowledge and Request
+            </button>
+          )}
+
+          {step > 0 && (
+            <button
+              onClick={() => setStep(s => s - 1)}
+              style={{
+                width: '100%',
+                padding: 11,
+                background: 'transparent',
+                color: '#6b7280',
+                border: '1.5px solid #e5e7eb',
+                borderRadius: 8,
+                fontSize: 14,
+                fontWeight: 500,
+                cursor: 'pointer',
+                fontFamily: 'inherit',
+              }}
+            >
+              ← Back
+            </button>
+          )}
         </div>
 
-        {/* Submit */}
-        <div>
-          <button
-            disabled={!ackChecked}
-            style={{
-              width: '100%',
-              padding: 13,
-              background: ackChecked ? '#2563eb' : '#93c5fd',
-              color: '#fff',
-              border: 'none',
-              borderRadius: 8,
-              fontSize: 14,
-              fontWeight: 600,
-              cursor: ackChecked ? 'pointer' : 'not-allowed',
-              transition: 'background 0.15s',
-              fontFamily: 'inherit',
-            }}
-          >
-            Acknowledge and Request
-          </button>
+        {step === TOTAL_STEPS - 1 && (
           <p className="text-center text-[11px] text-gray-400 mt-2.5 leading-snug">
             Your request will be reviewed by the security admin team.
           </p>
-        </div>
+        )}
 
       </div>
     </div>

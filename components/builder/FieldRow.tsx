@@ -13,9 +13,11 @@ interface Props {
   field: FormField
   onChange: (updates: Partial<FormField>) => void
   onDelete: () => void
+  draggable?: boolean
+  onDragStart?: (e: React.DragEvent) => void
 }
 
-export function FieldRow({ field, onChange, onDelete }: Props) {
+export function FieldRow({ field, onChange, onDelete, draggable, onDragStart }: Props) {
   const [open, setOpen] = useState(false)
 
   const isChoice = field.type === 'Multiple choice' || field.type === 'Multi-select'
@@ -25,7 +27,7 @@ export function FieldRow({ field, onChange, onDelete }: Props) {
 
   if (isSection) {
     return (
-      <div className="flex items-center gap-2.5 px-5 py-2 bg-gray-50 border-b border-gray-100">
+      <div className="flex items-center gap-2.5 px-5 py-2 bg-gray-50 border-b border-gray-100" draggable={draggable} onDragStart={onDragStart}>
         <GripVertical className="w-3.5 h-3.5 text-gray-300 shrink-0 cursor-grab" />
         <input
           className="flex-1 bg-transparent border-none outline-none text-[13px] font-semibold text-gray-700 placeholder:text-gray-400 placeholder:font-normal"
@@ -45,7 +47,7 @@ export function FieldRow({ field, onChange, onDelete }: Props) {
   }
 
   return (
-    <div className="border-b border-gray-100 last:border-b-0">
+    <div className="border-b border-gray-100 last:border-b-0" draggable={draggable} onDragStart={onDragStart}>
       {/* Row top */}
       <div
         className="flex items-center gap-2.5 px-5 py-[11px] cursor-pointer hover:bg-gray-50 transition-colors"
