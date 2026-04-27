@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { FormField, FormStep, FieldType } from '@/types/form'
 import { createField } from '@/lib/field-utils'
 import { FieldRow } from '@/components/builder/FieldRow'
@@ -76,8 +76,13 @@ export default function BuilderPage() {
   const [steps, setSteps] = useState<FormStep[]>([defaultStep])
   const [activeStepId, setActiveStepId] = useState('step-1')
   const [dragOverStepId, setDragOverStepId] = useState<string | null>(null)
+  const [dragOverFieldId, setDragOverFieldId] = useState<string | null>(null)
 
   const activeStep = steps.find(s => s.id === activeStepId) ?? steps[0]
+
+  useEffect(() => {
+    localStorage.setItem('custom-form-state', JSON.stringify({ steps, formTitle, formDescription, ctaLabel }))
+  }, [steps, formTitle, formDescription, ctaLabel])
 
   function updateField(stepId: string, sectionId: string, fieldId: string, updates: Partial<FormField>) {
     setSteps(prev => prev.map(step =>
@@ -170,6 +175,26 @@ export default function BuilderPage() {
         }
       })
     })
+  }
+
+  function reorderField(stepId: string, sectionId: string, fromId: string, toId: string) {
+    setSteps(prev => prev.map(step => {
+      if (step.id !== stepId) return step
+      return {
+        ...step,
+        sections: step.sections.map(sec => {
+          if (sec.id !== sectionId) return sec
+          const fields = sec.fields
+          const fromIdx = fields.findIndex(f => f.id === fromId)
+          const toIdx = fields.findIndex(f => f.id === toId)
+          if (fromIdx === -1 || toIdx === -1 || fromIdx === toIdx) return sec
+          const next = [...fields]
+          const [moved] = next.splice(fromIdx, 1)
+          next.splice(toIdx, 0, moved)
+          return { ...sec, fields: next }
+        }),
+      }
+    }))
   }
 
   function handleDropOnStep(e: React.DragEvent, toStepId: string) {
@@ -298,7 +323,7 @@ export default function BuilderPage() {
             </div>
 
             {/* Field rows — active step only */}
-            <div>
+            <div onDragLeave={() => setDragOverFieldId(null)}>
               {activeStep.sections.map(sec => (
                 <div key={sec.id}>
                   {sec.fields.length === 0 && (
@@ -312,10 +337,26 @@ export default function BuilderPage() {
                       field={field}
                       onChange={updates => updateField(activeStep.id, sec.id, field.id, updates)}
                       onDelete={() => deleteField(activeStep.id, sec.id, field.id)}
-                      draggable={steps.length > 1}
+                      draggable
+                      isDragOver={dragOverFieldId === field.id}
                       onDragStart={e => {
                         e.dataTransfer.setData('application/json', JSON.stringify({ fieldId: field.id, stepId: activeStep.id, sectionId: sec.id }))
                         e.dataTransfer.effectAllowed = 'move'
+                      }}
+                      onDragOver={e => { e.preventDefault(); e.stopPropagation(); setDragOverFieldId(field.id) }}
+                      onDrop={e => {
+                        e.preventDefault()
+                        e.stopPropagation()
+                        setDragOverFieldId(null)
+                        try {
+                          const { fieldId: draggedId, stepId: fromStepId, sectionId: fromSectionId } = JSON.parse(e.dataTransfer.getData('application/json'))
+                          if (draggedId === field.id) return
+                          if (fromStepId === activeStep.id && fromSectionId === sec.id) {
+                            reorderField(activeStep.id, sec.id, draggedId, field.id)
+                          } else {
+                            moveFieldToStep(draggedId, fromStepId, fromSectionId, activeStep.id)
+                          }
+                        } catch { /* invalid payload */ }
                       }}
                     />
                   ))}
