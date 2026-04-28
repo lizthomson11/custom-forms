@@ -147,10 +147,12 @@ function PreviewField({ field }: { field: FormField }) {
         <label style={{ display: 'flex', alignItems: 'flex-start', gap: 7, padding: '6px 8px', background: '#f8faff', border: '1px solid #bfdbfe', borderRadius: 4, cursor: 'pointer' }}>
           <input type="checkbox" style={{ accentColor: '#3b5bdb', width: 12, height: 12, flexShrink: 0, marginTop: 1 }} readOnly />
           <div>
-            <div style={{ fontSize: 10, fontWeight: 600, color: '#111827' }}>
-              {field.name}{field.required && <span style={{ color: '#ef4444' }}> *</span>}
-            </div>
-            {field.helperText && <div style={{ fontSize: 9, color: '#9ca3af', marginTop: 2 }}>{field.helperText}</div>}
+            <div
+              className="rich-text-content"
+              style={{ fontSize: 10, fontWeight: 600, color: '#111827' }}
+              dangerouslySetInnerHTML={{ __html: field.name + (field.required ? '<span style="color:#ef4444"> *</span>' : '') }}
+            />
+            {field.helperText && <div className="rich-text-content" style={{ fontSize: 9, color: '#9ca3af', marginTop: 2 }} dangerouslySetInnerHTML={{ __html: field.helperText }} />}
           </div>
         </label>
       </div>

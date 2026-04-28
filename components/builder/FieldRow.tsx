@@ -8,6 +8,11 @@ import { GripVertical, Trash2, ChevronDown, Lock } from 'lucide-react'
 import { FieldTypeBadge } from './FieldTypeBadge'
 import { AdvancedSettings } from './AdvancedSettings'
 import { OptionsEditor } from './OptionsEditor'
+import { RichTextEditor } from './RichTextEditor'
+
+function stripHtml(html: string) {
+  return html.replace(/<[^>]*>/g, '').trim()
+}
 
 interface Props {
   field: FormField
@@ -72,7 +77,7 @@ export function FieldRow({ field, onChange, onDelete, draggable, onDragStart, on
       >
         <GripVertical className="w-3.5 h-3.5 text-gray-300 shrink-0 cursor-grab" />
         <span className={`flex-1 text-[13px] truncate ${field.name && field.name !== field.type ? 'text-gray-700' : 'text-gray-400 italic'}`}>
-          {field.name || field.type}
+          {(isCheckbox ? stripHtml(field.name) : field.name) || field.type}
         </span>
         <FieldTypeBadge type={field.type} />
         {isSystem ? (
@@ -96,15 +101,25 @@ export function FieldRow({ field, onChange, onDelete, draggable, onDragStart, on
 
           {/* Field name */}
           <div className="flex flex-col gap-1">
-            <label className="text-[13px] font-medium text-gray-700">Field name</label>
-            <input
-              className={`w-full px-[11px] py-2 border border-gray-200 rounded-md text-[13px] bg-white focus:outline-none ${isSystem ? 'text-gray-400 cursor-not-allowed' : 'text-gray-900 focus:border-blue-300'}`}
-              style={{ fontFamily: 'inherit' }}
-              value={field.name}
-              placeholder={`e.g. ${field.type}`}
-              readOnly={isSystem}
-              onChange={isSystem ? undefined : e => onChange({ name: e.target.value })}
-            />
+            <label className="text-[13px] font-medium text-gray-700">
+              {isCheckbox ? 'Label' : 'Field name'}
+            </label>
+            {isCheckbox ? (
+              <RichTextEditor
+                value={field.name}
+                onChange={name => onChange({ name })}
+                placeholder="e.g. I agree to the Terms of Service"
+              />
+            ) : (
+              <input
+                className={`w-full px-[11px] py-2 border border-gray-200 rounded-md text-[13px] bg-white focus:outline-none ${isSystem ? 'text-gray-400 cursor-not-allowed' : 'text-gray-900 focus:border-blue-300'}`}
+                style={{ fontFamily: 'inherit' }}
+                value={field.name}
+                placeholder={`e.g. ${field.type}`}
+                readOnly={isSystem}
+                onChange={isSystem ? undefined : e => onChange({ name: e.target.value })}
+              />
+            )}
           </div>
 
           {/* Helper text */}
@@ -115,13 +130,21 @@ export function FieldRow({ field, onChange, onDelete, draggable, onDragStart, on
             <span className="text-[11px] text-gray-400 -mt-0.5">
               {isCheckbox ? 'Shown below the checkbox for extra context' : 'Shown below the field to give users more context'}
             </span>
-            <input
-              className="w-full px-[11px] py-2 border border-gray-200 rounded-md text-[13px] text-gray-900 bg-white focus:outline-none focus:border-blue-300"
-              style={{ fontFamily: 'inherit' }}
-              value={field.helperText}
-              placeholder="Add helper text…"
-              onChange={e => onChange({ helperText: e.target.value })}
-            />
+            {isCheckbox ? (
+              <RichTextEditor
+                value={field.helperText}
+                onChange={helperText => onChange({ helperText })}
+                placeholder="Add helper text…"
+              />
+            ) : (
+              <input
+                className="w-full px-[11px] py-2 border border-gray-200 rounded-md text-[13px] text-gray-900 bg-white focus:outline-none focus:border-blue-300"
+                style={{ fontFamily: 'inherit' }}
+                value={field.helperText}
+                placeholder="Add helper text…"
+                onChange={e => onChange({ helperText: e.target.value })}
+              />
+            )}
           </div>
 
           <hr className="border-gray-200" />
