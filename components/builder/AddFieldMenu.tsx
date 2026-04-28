@@ -62,16 +62,18 @@ export function AddFieldMenu({ onAdd }: Props) {
         right: dropdownPos.right,
         width: 240,
         maxHeight: dropdownPos.maxHeight,
-        overflowY: 'auto',
+        overflow: 'hidden',
         background: '#fff',
         border: '1px solid #e5e7eb',
         borderRadius: 10,
         boxShadow: '0 8px 24px rgba(0,0,0,0.10)',
         zIndex: 9999,
-        overflow: 'hidden',
         fontFamily: "-apple-system, BlinkMacSystemFont, 'Inter', 'Segoe UI', sans-serif",
+        display: 'flex',
+        flexDirection: 'column',
       }}
     >
+      <div style={{ overflowY: 'auto', flex: 1 }}>
       {FIELD_OPTIONS.map(({ type, Icon, description }, i) => (
         <div
           key={type}
@@ -88,6 +90,7 @@ export function AddFieldMenu({ onAdd }: Props) {
           </div>
         </div>
       ))}
+      </div>
     </div>
   ) : null
 
