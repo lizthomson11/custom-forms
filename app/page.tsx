@@ -229,10 +229,11 @@ function UserField({ field, checked, onToggle }: { field: FormField; checked: bo
           onChange={onToggle}
         />
         <div>
-          <div className="text-[13px] text-gray-700 leading-relaxed">
-            {field.name}{field.required && <span className="text-red-500"> *</span>}
-          </div>
-          {field.helperText && <div className="text-[11px] text-gray-400 mt-0.5">{field.helperText}</div>}
+          <div
+            className="text-[13px] text-gray-700 leading-relaxed rich-text-content"
+            dangerouslySetInnerHTML={{ __html: field.name + (field.required ? '<span class="text-red-500"> *</span>' : '') }}
+          />
+          {field.helperText && <div className="text-[11px] text-gray-400 mt-0.5 rich-text-content" dangerouslySetInnerHTML={{ __html: field.helperText }} />}
         </div>
       </label>
     )
