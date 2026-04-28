@@ -23,22 +23,18 @@ interface Props {
 
 export function AddFieldMenu({ onAdd }: Props) {
   const [open, setOpen] = useState(false)
-  const [dropdownPos, setDropdownPos] = useState<{ top?: number; bottom?: number; right: number }>({ right: 0 })
+  const [dropdownPos, setDropdownPos] = useState({ top: 0, right: 0, maxHeight: 400 })
   const buttonRef = useRef<HTMLButtonElement>(null)
   const dropdownRef = useRef<HTMLDivElement>(null)
-
-  const DROPDOWN_HEIGHT = 396 // 9 items × ~44px
 
   function openMenu() {
     if (buttonRef.current) {
       const rect = buttonRef.current.getBoundingClientRect()
-      const right = window.innerWidth - rect.right
-      const spaceBelow = window.innerHeight - rect.bottom - 8
-      if (spaceBelow >= DROPDOWN_HEIGHT) {
-        setDropdownPos({ top: rect.bottom + 6, right })
-      } else {
-        setDropdownPos({ bottom: window.innerHeight - rect.top + 6, right })
-      }
+      setDropdownPos({
+        top: rect.bottom + 6,
+        right: window.innerWidth - rect.right,
+        maxHeight: window.innerHeight - rect.bottom - 16,
+      })
     }
     setOpen(true)
   }
@@ -63,10 +59,9 @@ export function AddFieldMenu({ onAdd }: Props) {
       style={{
         position: 'fixed',
         top: dropdownPos.top,
-        bottom: dropdownPos.bottom,
         right: dropdownPos.right,
         width: 240,
-        maxHeight: '80vh',
+        maxHeight: dropdownPos.maxHeight,
         overflowY: 'auto',
         background: '#fff',
         border: '1px solid #e5e7eb',
