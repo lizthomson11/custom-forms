@@ -312,7 +312,7 @@ export default function BuilderPage() {
                 </div>
               ))}
               <button
-                className="ml-1 px-2.5 py-1.5 rounded-md text-[12px] text-gray-400 hover:text-gray-600 border border-dashed border-gray-300 hover:border-gray-400 hover:bg-gray-50 transition-colors"
+                className="ml-1 px-2.5 py-1.5 text-[12px] font-medium text-blue-600 hover:text-blue-700 transition-colors"
                 onClick={addStep}
               >
                 + Add step
