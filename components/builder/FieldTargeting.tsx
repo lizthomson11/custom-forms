@@ -129,6 +129,8 @@ export function FieldTargeting({ field, onChange }: Props) {
     onChange({ targeting: next.length ? next : [{ ...DEFAULT_RULE }] })
   }
 
+  const canAddRule = !rules.some(r => r.permission === 'write' && r.audience === 'all-users')
+
   return (
     <div className="flex flex-col gap-2">
       <p className="text-xs font-medium text-gray-700">Targeting</p>
@@ -146,7 +148,8 @@ export function FieldTargeting({ field, onChange }: Props) {
 
       <button
         type="button"
-        className="flex items-center gap-1 text-[12px] font-medium text-blue-600 hover:text-blue-700 transition-colors w-fit"
+        disabled={!canAddRule}
+        className="flex items-center gap-1 text-[12px] font-medium transition-colors w-fit disabled:opacity-40 disabled:cursor-not-allowed text-blue-600 hover:text-blue-700"
         onClick={addRule}
       >
         <Plus className="w-3.5 h-3.5" />
