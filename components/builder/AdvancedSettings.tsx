@@ -7,17 +7,21 @@ import { Switch } from '@/components/ui/switch'
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible'
 import { ChevronRight } from 'lucide-react'
 import { useState } from 'react'
+import { FieldTargeting } from './FieldTargeting'
 
 interface Props {
   field: FormField
   onChange: (updates: Partial<FormField>) => void
 }
 
+const FIELD_SPECIFIC_TYPES = ['Open text', 'Number', 'Phone', 'Date', 'File upload']
+
 export function AdvancedSettings({ field, onChange }: Props) {
   const [open, setOpen] = useState(false)
 
-  const hasAdvanced = ['Open text', 'Number', 'Phone', 'Date', 'File upload'].includes(field.type)
-  if (!hasAdvanced) return null
+  const hasFieldSpecific = FIELD_SPECIFIC_TYPES.includes(field.type)
+  // Section Header has no targeting or advanced settings
+  if (field.type === 'Section Header') return null
 
   return (
     <Collapsible open={open} onOpenChange={setOpen}>
@@ -27,6 +31,8 @@ export function AdvancedSettings({ field, onChange }: Props) {
       </CollapsibleTrigger>
       <CollapsibleContent>
         <div className="mt-2 p-3 bg-gray-100 rounded-md flex flex-col gap-3">
+          <FieldTargeting field={field} onChange={onChange} />
+          {hasFieldSpecific && <hr className="border-gray-200" />}
 
           {/* Open text: placeholder + min/max chars */}
           {field.type === 'Open text' && (
