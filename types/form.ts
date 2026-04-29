@@ -9,6 +9,15 @@ export type FieldType =
   | 'Checkbox'
   | 'Section Header'
 
+export type TargetingAudience = 'all-users' | 'specific-users' | 'specific-roles'
+export type TargetingPermission = 'read' | 'write'
+
+export interface TargetingRule {
+  permission: TargetingPermission
+  audience: TargetingAudience
+  values?: string[]       // user names or role names when audience is specific
+}
+
 export interface FormField {
   id: string
   type: FieldType
@@ -16,6 +25,7 @@ export interface FormField {
   helperText: string
   required: boolean
   system?: boolean  // system fields cannot be deleted
+  targeting?: TargetingRule[]
   // Open text / Number / Phone / Date
   placeholder?: string
   // Number
